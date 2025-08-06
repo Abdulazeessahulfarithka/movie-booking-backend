@@ -1,36 +1,50 @@
 import User from "../Model/userModel.js";
 
+// Register Controller
+export const register = async (req, res) => {
+  try {
+    const { email, password, phone } = req.body;
 
-export const register =async(req,res)=>{
-    try{
-   const {email,password,phone}=req.body;
-   if(!email){
-return res.send({message:"Email is required"})
-   }
-   if(!password){
-return res.send({message:"Email is required"})
-   }
-   if(!phone){
-return res.send({message:"Email is required"})
-   }
-
-
-   ///check user
-   const existinguser=await user.findone({email})
-   if(existinguser){
-    return res.status(200).send({
-        sucess:true,
-        message:"already register plese login"
-    })
-   }
+    // Validation
+    if (!email) {
+      return res.status(400).send({ success: false, message: "Email is required" });
     }
-    catch(error){
-        console.log("error")
+    if (!password) {
+      return res.status(400).send({ success: false, message: "Password is required" });
     }
-}
+    if (!phone) {
+      return res.status(400).send({ success: false, message: "Phone is required" });
+    }
 
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).send({
+        success: false,
+        message: "Already registered, please login",
+      });
+    }
 
-//post login
+    // Create new user
+    const user = new User({ email, password, phone });
+    await user.save();
+
+    return res.status(201).send({
+      success: true,
+      message: "User registered successfully",
+      user,
+    });
+
+  } catch (error) {
+    console.error("Register error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong during registration",
+    });
+  }
+};
+
+// Login Controller
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -60,7 +74,7 @@ export const loginController = async (req, res) => {
     //   });
     // }
 
-    res.status(200).send({
+    return res.status(200).send({
       success: true,
       message: "Login successful",
       user,
@@ -74,4 +88,3 @@ export const loginController = async (req, res) => {
     });
   }
 };
-
