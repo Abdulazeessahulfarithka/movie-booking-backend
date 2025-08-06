@@ -1,39 +1,33 @@
-import express from "express"
-import * as dotenv from "dotenv"
-import db from "./Config/db.js"
-import userrouter from "./Route/userRoute.js"
-import movierouter from "./Route/movieRoute.js"
-import bookticket from "./Route/bookticketRoute.js"
+import express from "express";
+import * as dotenv from "dotenv";
+import db from "./Config/db.js";
+import userrouter from "./Route/userRoute.js";
+import movierouter from "./Route/movieRoute.js";
+import bookticket from "./Route/bookticketRoute.js";
 
-dotenv.config()
+dotenv.config();
 
-const app =express()
+const app = express();
 
+// Database connection
+db();
 
-//database connection
- db()
-
- // middlewares
- app.use(express.json())
-
-//middlewares
+// Middlewares
 app.use(express.json());
-
-
 app.use(express.urlencoded({ extended: false }));
 
-const PORT =process.env.PORT
+const PORT = process.env.PORT || 5000;
 
-//router 
-app.use("/api/user",userrouter)
-app.use("/api/movie",movierouter)
-app.use("/api/ticket",bookticket)
+// Routers
+app.use("/api/user", userrouter);
+app.use("/api/movie", movierouter);
+app.use("/api/ticket", bookticket);
 
-app.get("/",(res,req)=>{
-    res.send("hello world")
-})
+// Test route
+app.get("/", (req, res) => {   // ✅ Fixed
+    res.send("hello world");
+});
 
-
-app.listen(PORT,()=>{
-    console.log("server is connected ")
-})
+app.listen(PORT, () => {
+    console.log(`Server is connected on port ${PORT}`);
+});
