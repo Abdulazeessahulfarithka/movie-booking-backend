@@ -3,9 +3,13 @@ import User from "../Model/userModel.js";
 // Register Controller
 export const register = async (req, res) => {
   try {
-    const { email, password, phone } = req.body;
+    const {name, email, password, phone } = req.body;
 
     // Validation
+   if(!name){
+        return res.status(400).send({ success: false, message: "Name is required" });
+
+}
     if (!email) {
       return res.status(400).send({ success: false, message: "Email is required" });
     }
@@ -26,7 +30,7 @@ export const register = async (req, res) => {
     }
 
     // Create new user
-    const user = new User({ email, password, phone });
+    const user = new User({ name,email, password, phone });
     await user.save();
 
     return res.status(201).send({

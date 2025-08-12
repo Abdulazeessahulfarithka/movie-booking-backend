@@ -1,5 +1,7 @@
 import express from "express";
 import * as dotenv from "dotenv";
+import cors from "cors"
+import morgan from "morgan"
 import db from "./Config/db.js";
 import userrouter from "./Route/userRoute.js";
 import movierouter from "./Route/movieRoute.js";
@@ -14,7 +16,9 @@ db();
 
 // Middlewares
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+app.use(morgan("dev"));
 
 const PORT = process.env.PORT || 5000;
 
