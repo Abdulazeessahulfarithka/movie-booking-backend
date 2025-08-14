@@ -14,6 +14,7 @@ export const addMovie = async (req, res) => {
     }
 
     const movie = new Movie({
+      
       moviename,
       image,
       aboutmovie,
@@ -21,9 +22,8 @@ export const addMovie = async (req, res) => {
       crew,
       ratings,
     });
-
     await movie.save();
-
+    console.log(movie)
     res.status(201).json({
       success: true,
       message: "Movie added successfully",

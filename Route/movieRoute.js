@@ -11,7 +11,7 @@ import { authMiddleware } from "../Middleware/auth.js";
 const router = express.Router();
 
 // Add a movie (protected route - only logged in users, ideally admin)
-router.post("/add", authMiddleware, addMovie);
+router.post("/add",addMovie);
 
 // Get all movies (public)
 router.get("/", getMovies);
