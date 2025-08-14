@@ -22,5 +22,5 @@ const movieschema=new mongoose.Schema ({
         type:String
     }
 })
-const movie= mongoose.model("movie",movieschema)
-export default movie
+const Movie= mongoose.model("movie",movieschema)
+export default Movie

@@ -1,4 +1,6 @@
+
 import User from "../Model/userModel.js";
+import JWT from "jsonwebtoken";
 
 // Register Controller
 export const register = async (req, res) => {
@@ -70,19 +72,30 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Password check placeholder (bcrypt recommended)
-    // if (password !== user.password) {
-    //   return res.status(401).send({
-    //     success: false,
-    //     message: "Invalid password",
-    //   });
-    // }
-
+  const match= await comparepassword(password,user.password)
+  if(!match){
     return res.status(200).send({
+      success:false,
+      message:"invalid password",
+    })
+  }
+  
+     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    }); 
+     res.status(200).send({
       success: true,
-      message: "Login successful",
-      user,
-    });
+      message: "login successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+      },
+      token,
+    })
 
   } catch (error) {
     console.error("Login error:", error);
