@@ -9,7 +9,7 @@ import { authMiddleware } from "../Middleware/auth.js";
 const router = express.Router();
 
 // Book a ticket (protected - only logged in users)
-router.post("/book", authMiddleware, bookTicket);
+router.post("/book", bookTicket);
 
 // Get all bookings (protected - ideally admin only)
 router.get("/", authMiddleware, getBookings);

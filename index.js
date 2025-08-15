@@ -6,7 +6,7 @@ import db from "./Config/db.js";
 import userrouter from "./Route/userRoute.js";
 import movierouter from "./Route/movieRoute.js";
 import bookticket from "./Route/bookticketRoute.js";
-
+import recommendrouter from "./Route/updatemovieRoute.js"
 dotenv.config();
 
 const app = express();
@@ -26,6 +26,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/user", userrouter);
 app.use("/api/movie", movierouter);
 app.use("/api/ticket", bookticket);
+app.use("/api/recommend",recommendrouter)
 
 // Test route
 app.get("/", (req, res) => {   // ✅ Fixed
