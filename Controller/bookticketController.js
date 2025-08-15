@@ -1,6 +1,16 @@
+import braintree from "braintree";
 import Book from "../Model/bookticketModel.js";
 import Movie from "../Model/movieModel.js";
+import { response } from "express";
 
+
+//payment gateway
+const gateway =new braintree.BraintreeGateway({
+   environment: braintree.Environment.Sandbox,
+  merchantId: 'your_merchant_id',
+  publicKey: 'your_public_key',
+  privateKey: 'your_private_key',
+})
 // Book a ticket
 export const bookTicket = async (req, res) => {
   try {
@@ -24,7 +34,7 @@ export const bookTicket = async (req, res) => {
     }
 
     // Create booking
-    const booking = new Book({ time, seats });
+    const booking = new Book({ time, seats,movieId });
     await booking.save();
 
     return res.status(201).send({
@@ -98,3 +108,53 @@ export const getBookingById = async (req, res) => {
     });
   }
 };
+
+//payment gateway api
+export const brainTokenController =async (req,res)=>{
+  try{
+   await gateway.clientToken.generate({}, function(err,message){
+    if (err){
+      res.status(500).send(err)
+    } else{
+      res.send(response)
+    }
+   })
+  }catch(error){
+    console.log(error)
+  }
+}
+
+//payment
+ export const brainPaymentController = async  (req,res) =>{
+  try{
+    const {nonce,cart}=req.body
+    let total=0;
+    cart.map((i)=>{
+      total += i.price
+    })
+    let newTransaction=gateway.transaction.sale({
+      amount:total,
+      paymentMethodNonce:nonce,
+      options:{
+        submitForSettlement:true,
+      }
+
+  },
+    function (err,result){
+      if(result){
+        const order =new orderModel({
+          products:cart,
+          payment:result,
+          buyer:req.user_id,
+        }).save()
+      } else{
+        res.status(500).send(error)
+      }
+    }
+    )
+
+  }catch(error){
+    console.group(error)
+  }
+
+ }
