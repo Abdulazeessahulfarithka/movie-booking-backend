@@ -110,7 +110,7 @@ export const getBookingById = async (req, res) => {
 };
 
 //payment gateway api
-export const brainTokenController =async (req,res)=>{
+export const braintreeTokenController =async (req,res)=>{
   try{
    await gateway.clientToken.generate({}, function(err,message){
     if (err){
@@ -125,7 +125,7 @@ export const brainTokenController =async (req,res)=>{
 }
 
 //payment
- export const brainPaymentController = async  (req,res) =>{
+ export const brainTreePaymentController = async  (req,res) =>{
   try{
     const {nonce,cart}=req.body
     let total=0;

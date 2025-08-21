@@ -2,7 +2,9 @@ import express from "express";
 import { 
   bookTicket, 
   getBookings, 
-  getBookingById 
+  getBookingById,
+  braintreeTokenController,
+  brainTreePaymentController
 } from "../Controller/bookticketController.js";
 import { authMiddleware } from "../Middleware/auth.js";
 
@@ -16,5 +18,13 @@ router.get("/", authMiddleware, getBookings);
 
 // Get booking by ID (protected - only logged in users can view their booking)
 router.get("/:id", authMiddleware, getBookingById);
+
+//payments routes
+//token
+router.get("/braintree/token", braintreeTokenController);
+
+//payments
+router.post("/braintree/payment", authMiddleware, brainTreePaymentController);
+
 
 export default router;
