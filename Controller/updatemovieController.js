@@ -25,3 +25,24 @@ export const recommendMovie= async (req,res) =>{
     });
     }
 }
+//get-movie
+
+export const getmovie=async (req,res) => {
+    try{
+     const movie =await Update.find()
+     if(!movie.length){
+        return res.status(404).json({
+            sucess:false,
+            message:'no movies found',
+        })
+     }
+      res.status(200).json({
+        sucess:true,
+        message:"Movies fetched sucessfully",
+        movie,
+      })
+    }catch(error){
+        console.log("error")
+    }
+
+}
