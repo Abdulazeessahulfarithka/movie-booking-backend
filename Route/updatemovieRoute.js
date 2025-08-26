@@ -1,10 +1,12 @@
 import express from "express";
-import { recommendMovie } from "../Controller/updatemovieController.js";
+import { recommendMovie, getMovies } from "../Controller/updatemovieController.js";
 
-const router =express.Router()
+const router = express.Router();
 
-router.post('/update',recommendMovie)
-router.get('/update-add',recommendMovie)
+// Add movie (POST)
+router.post('/add', recommendMovie);
 
+// Get all movies (GET)
+router.get('/all', getMovies);
 
-export default router
+export default router;
