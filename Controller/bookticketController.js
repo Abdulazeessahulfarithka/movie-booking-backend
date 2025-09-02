@@ -17,7 +17,7 @@ export const bookTicket = async (req, res) => {
     const { time, seats, movieId } = req.body;
 
     // Validation
-    if (!time || !seats || !movieId) {
+    if (!time || !seats) {
       return res.status(400).send({
         success: false,
         message: "Time, seats, and movieId are required",
@@ -34,7 +34,7 @@ export const bookTicket = async (req, res) => {
     }
 
     // Create booking
-    const booking = new Book({ time, seats,movieId });
+    const booking = new Book({ time,seats });
     await booking.save();
 
     return res.status(201).send({
