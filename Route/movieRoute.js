@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/add",addMovie);
 
 // Get all movies (public)
-router.get("/", getMovies);
+router.get("/all", getMovies);
 
 // Get single movie by ID (public)
 router.get("/:id", getMovieById);
