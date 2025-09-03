@@ -14,7 +14,7 @@ const gateway =new braintree.BraintreeGateway({
 // Book a ticket
 export const bookTicket = async (req, res) => {
   try {
-    const { time, seats, movieId } = req.body;
+    const { time, seats} = req.body;
 
     // Validation
     if (!time || !seats) {
@@ -25,13 +25,13 @@ export const bookTicket = async (req, res) => {
     }
 
     // Check if movie exists
-    const movie = await Movie.findById(movieId);
-    if (!movie) {
-      return res.status(404).send({
-        success: false,
-        message: "Movie not found",
-      });
-    }
+    // const movie = await Movie.findById(movieId);
+    // if (!movie) {
+    //   return res.status(404).send({
+    //     success: false,
+    //     message: "Movie not found",
+    //   });
+    // }
 
     // Create booking
     const booking = new Book({ time,seats });
