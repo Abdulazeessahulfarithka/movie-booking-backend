@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/book", bookTicket);
 
 // Get all bookings (protected - ideally admin only)
-router.get("/", authMiddleware, getBookings);
+router.get("/",getBookings);
 
 // Get booking by ID (protected - only logged in users can view their booking)
 router.get("/:id", authMiddleware, getBookingById);
