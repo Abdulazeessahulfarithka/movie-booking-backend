@@ -1,25 +1,28 @@
 import braintree from "braintree";
+import dotenv from "dotenv";
 import Book from "../Model/bookticketModel.js";
 import Movie from "../Model/movieModel.js";
+
+dotenv.config();
 
 // Payment Gateway Configuration (Sandbox)
 const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
-  merchantId: "your_merchant_id",
-  publicKey: "your_public_key",
-  privateKey: "your_private_key",
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
 
-// Book a ticket
+// ================== BOOK TICKET ==================
 export const bookTicket = async (req, res) => {
   try {
     const { time, seats, movieId } = req.body;
 
     // Validation
-    if (!time || !seats || seats.length === 0 || !movieId) {
+    if (!time || !seats || !Array.isArray(seats) || seats.length === 0 || !movieId) {
       return res.status(400).send({
         success: false,
-        message: "Time, seats, and movieId are required",
+        message: "Time, seats (array), and movieId are required",
       });
     }
 
@@ -32,14 +35,14 @@ export const bookTicket = async (req, res) => {
       });
     }
 
-    // Calculate total price
-    const ticketPrice = 200; // Can be dynamic
+    // Calculate total price (dynamic or static)
+    const ticketPrice = 200; // can be dynamic (from movie.price)
     const totalPrice = seats.length * ticketPrice;
 
     // Create booking
     const booking = new Book({
       time,
-      seats, // Array of seat labels
+      seats, // Store as array of seat labels (e.g., ['A1', 'B2'])
       movieId,
       totalPrice,
     });
@@ -62,7 +65,7 @@ export const bookTicket = async (req, res) => {
   }
 };
 
-// Get all bookings
+// ================== GET ALL BOOKINGS ==================
 export const getBookings = async (req, res) => {
   try {
     const bookings = await Book.find().populate("movieId");
@@ -90,7 +93,7 @@ export const getBookings = async (req, res) => {
   }
 };
 
-// Get booking by ID
+// ================== GET BOOKING BY ID ==================
 export const getBookingById = async (req, res) => {
   try {
     const booking = await Book.findById(req.params.id).populate("movieId");
@@ -118,14 +121,21 @@ export const getBookingById = async (req, res) => {
   }
 };
 
-// Generate Braintree Token
+// ================== BRAINTREE TOKEN ==================
 export const braintreeTokenController = async (req, res) => {
   try {
-    gateway.clientToken.generate({}, function (err, response) {
+    gateway.clientToken.generate({}, (err, response) => {
       if (err) {
-        return res.status(500).send(err);
+        return res.status(500).send({
+          success: false,
+          message: "Error generating token",
+          error: err.message,
+        });
       } else {
-        res.send(response);
+        res.status(200).send({
+          success: true,
+          clientToken: response.clientToken,
+        });
       }
     });
   } catch (error) {
@@ -138,11 +148,13 @@ export const braintreeTokenController = async (req, res) => {
   }
 };
 
-// Process Braintree Payment
+// ================== BRAINTREE PAYMENT ==================
 export const brainTreePaymentController = async (req, res) => {
   try {
     const { nonce, cart } = req.body;
     let total = 0;
+
+    // Calculate total amount
     cart.forEach((item) => {
       total += item.price;
     });
@@ -155,8 +167,8 @@ export const brainTreePaymentController = async (req, res) => {
           submitForSettlement: true,
         },
       },
-      function (err, result) {
-        if (result) {
+      (err, result) => {
+        if (result?.success) {
           return res.status(200).send({
             success: true,
             message: "Payment processed successfully",
@@ -166,7 +178,7 @@ export const brainTreePaymentController = async (req, res) => {
           res.status(500).send({
             success: false,
             message: "Payment processing failed",
-            error: err,
+            error: err ? err.message : "Unknown error",
           });
         }
       }

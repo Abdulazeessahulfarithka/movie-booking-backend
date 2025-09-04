@@ -24,7 +24,7 @@ router.get("/:id", authMiddleware, getBookingById);
 router.get("/braintree/token", braintreeTokenController);
 
 //payments
-router.post("/braintree/payment", authMiddleware, brainTreePaymentController);
+router.post("/braintree/payment",brainTreePaymentController);
 
 
 export default router;
